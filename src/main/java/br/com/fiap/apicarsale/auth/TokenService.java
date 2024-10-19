@@ -36,4 +36,15 @@ public class TokenService {
         return new Token(token, user.getName(), user.getId().toString(), user.getRole());
     }
 
+    public User getUserFromToken(String token) {
+        var username = JWT.require(ALGORITHM)
+                .build()
+                .verify(token)
+                .getSubject();
+
+        return userRepository.findById(Long.parseLong(username)).orElseThrow(
+                () -> new UsernameNotFoundException("Usuario não encontrado")
+        );
+    }
+
 }
